@@ -74,6 +74,9 @@ Built as a **star schema** rather than a single flat table — one fact table co
 ## 📊 Dashboard Pages
 
 ### 1️⃣ Executive Summary
+
+![Executive Summary](<Executive Report.png>)
+
 High-level pulse of the business — total transactions, revenue, success/failure rate, fraud %, cashback outflow, and daily trends.
 
 **Key KPIs:** 502.887K transactions · ₹442.48M total value · 91% success rate · 7% failure rate · 3.4% fraud rate · ₹3.46M total cashback · 387K customers · ₹879.88 average transaction value
@@ -81,6 +84,9 @@ High-level pulse of the business — total transactions, revenue, success/failur
 Includes daily transaction/revenue trends, transaction status split, payment mode breakdown, and UPI app-wise transaction value.
 
 ### 2️⃣ Customer Analytics
+
+![Customer Analytics](<Customer Report.png>)
+
 Segments the customer base by age, gender, and geography, and surfaces top spenders.
 
 - 25–34 age group dominates transaction volume (172K+ unique customers)
@@ -88,6 +94,9 @@ Segments the customer base by age, gender, and geography, and surfaces top spend
 - 1.30 average transactions per customer · ₹1,119 average spend per customer
 
 ### 3️⃣ Merchant & Bank Analytics
+
+![Merchant and Bank Analytics](<Merchant and Bank Report.png>)
+
 Ranks merchants and banks by successful spend and success rate, to identify where value concentrates and where reliability drops.
 
 - Top merchant: **HP Petrol Pump** · Top bank: **HDFC Bank**
@@ -95,6 +104,9 @@ Ranks merchants and banks by successful spend and success rate, to identify wher
 - Bank success rates cluster tightly between 90.86%–91.19% — no major outlier bank
 
 ### 4️⃣ Fraud & Risk
+
+![Fraud and Risk](<Fraud and Risk Report.png>)
+
 The highest-stakes page — fraud trend over time, fraud/risk exposure by bank and merchant, failure reason breakdown, and hourly risk pattern.
 
 - 17.1K suspected fraud transactions (3.4% fraud rate), ₹15.55M in fraud value
@@ -103,12 +115,18 @@ The highest-stakes page — fraud trend over time, fraud/risk exposure by bank a
 - Top failure reasons: insufficient balance, beneficiary bank issues, transaction timeout
 
 ### 5️⃣ Geographic Analysis
+
+![Geographic Analysis](<Geographic Report.png>)
+
 State and city-level view of transaction volume, value, success/failure rates, and fraud/risk exposure, plus a filled map of fraud rate by state.
 
 - Delhi, Maharashtra, and Karnataka lead in transaction volume and value
 - Howrah, Warangal, and Kolkata top the list for suspected fraud by city
 
 ### 6️⃣ Quick Insights
+
+![Quick Insights](<Quick Report.png>)
+
 A narrative summary page — the one page built for someone who won't dig through the other five. Translates the numbers into plain-language business takeaways.
 
 **Sample insights surfaced:**
@@ -147,6 +165,8 @@ UPI-Transaction-Analysis/
 ├── Geographic Report.png
 └── Quick Report.png
 ```
+
+> **Note:** the `.pbix` and raw dataset are zipped due to GitHub's file size limits. Download and extract `UPI_Analysis.zip` to open the report in Power BI Desktop.
 
 ---
 
