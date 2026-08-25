@@ -183,6 +183,6 @@ UPI-Transaction-Analysis/
 
 **Lokeshwar Siddartha**
 Programmer Analyst | BI & Data Analytics
-📍 Andhra Pradesh, India
+📍India
 
 *Feedback and suggestions are welcome — feel free to open an issue or connect.*
