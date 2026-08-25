@@ -137,15 +137,15 @@ A narrative summary page — the one page built for someone who won't dig throug
 ```
 UPI-Transaction-Analysis/
 │
-├── UPI_Analysis.pbix          # Power BI report file
-├── README.md                  # This file
-└── screenshots/
-    ├── Executive_Report.png
-    ├── Customer_Report.png
-    ├── Merchant_and_Bank_Report.png
-    ├── Fraud_and_Risk_Report.png
-    ├── Geographic_Report.png
-    └── Quick_Report.png
+├── UPI_Analysis.zip            # Power BI report file (zipped — GitHub file size limit)
+├── phonepay_raw_data.zip       # Raw source dataset (zipped — 502,887 rows)
+├── README.md                   # This file
+├── Executive Report.png
+├── Customer Report.png
+├── Merchant and Bank Report.png
+├── Fraud and Risk Report.png
+├── Geographic Report.png
+└── Quick Report.png
 ```
 
 ---
