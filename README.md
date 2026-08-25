@@ -1,423 +1,168 @@
-UPI Transaction Analysis — Power BI
+# 📱 UPI Transaction Analysis Dashboard
 
-Overview
+**End-to-end analysis of 500K+ UPI transactions** — tracking transaction health, customer behavior, merchant & bank performance, fraud & risk exposure, and geographic trends using Power BI.
 
-This project analyzes UPI transaction data to understand transaction activity, customer behavior, merchant and bank performance, geographic patterns, and fraud-related risk.
+![Power BI](https://img.shields.io/badge/Power%20BI-F2C811?style=flat&logo=powerbi&logoColor=black)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white)
+![Excel](https://img.shields.io/badge/Excel-217346?style=flat&logo=microsoftexcel&logoColor=white)
+![DAX](https://img.shields.io/badge/DAX-Data%20Analysis%20Expressions-orange)
 
-The project was built as an end-to-end Power BI analysis, starting from transaction-level data and turning it into KPIs, trends, comparisons, and business insights.
+---
 
-Business Objective
+## 📌 Overview
 
-The analysis focuses on answering practical business questions:
+UPI (Unified Payments Interface) processes millions of transactions daily across banks, merchants, and payment apps. This project simulates a real-world fintech analytics function — turning **502,887 raw transaction records** into a decision-ready Power BI report covering transaction performance, customer segmentation, fraud detection, and regional trends.
 
-How many UPI transactions are happening?
+The goal: build the kind of dashboard a UPI operations or risk team would actually use every week to answer *"what changed, and where's the fire?"*
 
-What is the total transaction value?
+---
 
-What is the success and failure rate?
+## 🎯 Business Objective
 
-Which customers and customer segments contribute to activity?
+| Stakeholder | Question the dashboard answers |
+|---|---|
+| Operations | Are transactions succeeding? Why are they failing? |
+| Risk & Fraud | Where is fraud concentrated — which states, banks, merchants, payment modes? |
+| Growth / Marketing | Which customer segments and geographies drive the most value? |
+| Finance | What's the cashback outflow, and where's the highest-value merchant activity? |
 
-Which merchants and banks have the highest transaction value?
+---
 
-Which states and cities have the highest transaction activity?
+## 🗃️ Dataset
 
-Where is suspected fraud concentrated?
+- **502,887 transaction-level records**, 22 raw fields
+- Fields include: `Transaction_ID`, `Transaction_Date`, `Transaction_Time`, `UPI_App`, `Customer_ID`, `Age_Group`, `Gender`, `State`, `City`, `Merchant_Name`, `Merchant_Category`, `Transaction_Type`, `Payment_Mode`, `Bank_Name`, `Amount_INR`, `Cashback_INR`, `Transaction_Fee_INR`, `Status`, `Failure_Reason`, `Device_OS`, `Risk_Score`, `Is_Suspected_Fraud`
+- Time period covered: **May 2026**
 
-Which transactions fall into the high-risk segment?
+---
 
-Which payment modes show higher risk?
+## 🛠️ Tools & Tech Stack
 
-When during the day is transaction activity highest?
+| Tool | Purpose |
+|---|---|
+| **MySQL** | Storing raw data at scale, cleaning (nulls, duplicates, data types), deriving KPI logic via SQL before visualization |
+| **Excel** | Quick pivot-based validation of SQL output, sanity-checking KPI numbers |
+| **Power BI** | Data modeling (star schema), DAX measures, interactive report build, final delivery layer |
+| **DAX** | Success/failure rate, fraud %, risk scoring aggregates, customer/merchant/bank-level KPIs |
 
-What operational issues are contributing to failed transactions?
+---
 
-Dashboard Pages
+## 🏗️ Data Model
 
-1. Executive Summary
+Built as a **star schema** rather than a single flat table — one fact table connected to five dimension tables, with a dedicated measures table for all DAX logic:
 
-Provides the overall view of UPI activity.
+```
+                     Dim_Date
+                        │
+   Dim_Customer ─────┐  │  ┌───── Dim_Location
+                      │  │  │
+                    ┌─▼──▼──▼─┐
+                    │  data   │  (fact table — 502,887 rows)
+                    └─▲──▲──▲─┘
+                      │  │  │
+      Dim_UPI ────────┘  │  └──── Dim_Bank
+                          │
+                    Dim_Merchant
 
-Key metrics and analysis:
+              All Measures (centralized DAX layer)
+```
 
-Total Transactions — 502.887K
+**Why this matters:** centralizing every KPI as a DAX measure (rather than scattering calculated columns across the fact table) means every number recalculates correctly no matter how the report is sliced — by state, bank, merchant, app, or date range.
 
-Total Transaction Value — ₹442.48M
+---
 
-Success Rate — 91%
+## 📊 Dashboard Pages
 
-Failure Rate — 7%
+### 1️⃣ Executive Summary
+High-level pulse of the business — total transactions, revenue, success/failure rate, fraud %, cashback outflow, and daily trends.
 
-Total Cashback — ₹3.46M
+**Key KPIs:** 502.887K transactions · ₹442.48M total value · 91% success rate · 7% failure rate · 3.4% fraud rate · ₹3.46M total cashback · 387K customers · ₹879.88 average transaction value
 
-Fraud Rate — 3.4%
+Includes daily transaction/revenue trends, transaction status split, payment mode breakdown, and UPI app-wise transaction value.
 
-Total Customers — 387K
+### 2️⃣ Customer Analytics
+Segments the customer base by age, gender, and geography, and surfaces top spenders.
 
-Average Transaction Amount — ₹879.88
+- 25–34 age group dominates transaction volume (172K+ unique customers)
+- Gender split: 53% male, 45% female, 1% other
+- 1.30 average transactions per customer · ₹1,119 average spend per customer
 
-Daily transaction trend
+### 3️⃣ Merchant & Bank Analytics
+Ranks merchants and banks by successful spend and success rate, to identify where value concentrates and where reliability drops.
 
-Daily transaction value trend
+- Top merchant: **HP Petrol Pump** · Top bank: **HDFC Bank**
+- ₹402.89M in total successful spend across 457.63K successful transactions
+- Bank success rates cluster tightly between 90.86%–91.19% — no major outlier bank
 
-Transaction status
+### 4️⃣ Fraud & Risk
+The highest-stakes page — fraud trend over time, fraud/risk exposure by bank and merchant, failure reason breakdown, and hourly risk pattern.
 
-Payment mode
+- 17.1K suspected fraud transactions (3.4% fraud rate), ₹15.55M in fraud value
+- Average risk score: 50.38 across the base
+- Fraud concentrates in **UPI ID** and **QR Scan** payment modes (54K and 53K high-risk transactions respectively)
+- Top failure reasons: insufficient balance, beneficiary bank issues, transaction timeout
 
-UPI app-wise transaction value
+### 5️⃣ Geographic Analysis
+State and city-level view of transaction volume, value, success/failure rates, and fraud/risk exposure, plus a filled map of fraud rate by state.
 
-2. Customer Analytics
+- Delhi, Maharashtra, and Karnataka lead in transaction volume and value
+- Howrah, Warangal, and Kolkata top the list for suspected fraud by city
 
-Focuses on customer distribution and spending behavior.
+### 6️⃣ Quick Insights
+A narrative summary page — the one page built for someone who won't dig through the other five. Translates the numbers into plain-language business takeaways.
 
-Analysis includes:
+**Sample insights surfaced:**
+- Top 5 states contribute 56% of total transaction value; Maharashtra leads in both volume and value
+- High-risk transactions (30.9%) are meaningfully higher than confirmed suspected fraud (3.4%) — only 10.3% of high-risk transactions turn out to be actual fraud
+- Insufficient balance and bank declines account for 56.5% of all failures — an operational, not a fraud, problem
+- Evening hours see peak transaction activity, making that window the priority for real-time fraud monitoring
+- UPI ID and QR Scan together account for 59.8% of high-risk transactions
 
-Total customers
+---
 
-Average spend by customer
+## 🚀 Workflow
 
-Transactions per customer
+1. **Ingest** raw transaction data into MySQL
+2. **Clean & validate** — handle nulls/duplicates, correct data types, standardize categorical fields
+3. **Derive KPI logic in SQL** — success/failure rate, fraud rate, top merchants/categories — validated against Excel pivots
+4. **Model in Power BI** — star schema (fact + dimensions), centralized measures table
+5. **Build DAX measures** — rates, ratios, and aggregates that respond correctly across all filter contexts
+6. **Design report pages** — Executive Summary → Customer → Merchant & Bank → Fraud & Risk → Geographic → Quick Insights
+7. **Translate to insights** — narrative takeaways tied to specific numbers, not just charts
 
-Customers by age group
+---
 
-Customer distribution by state
+## 📂 Repository Structure
 
-Customers by gender
-
-Top 10 customers by successful spend
-
-The dashboard shows that the 25–34 age group has the largest customer population in the dataset.
-
-3. Merchant & Bank Analytics
-
-Compares successful transaction performance across merchants, categories, and banks.
-
-Analysis includes:
-
-Total successful transaction value
-
-Average transaction amount
-
-Successful transactions
-
-Top merchant by successful transaction value
-
-Top 10 merchants
-
-Successful transaction value by merchant category
-
-Successful transaction value by bank
-
-Bank success rate
-
-Merchant success rate
-
-The dashboard identifies HP Petrol Pump as the top merchant by successful transaction value and HDFC Bank as the top bank in the selected analysis.
-
-4. Fraud & Risk
-
-Examines suspected fraud, risk, and transaction failures.
-
-Key metrics:
-
-Suspected Fraud Transactions — 17.1K
-
-Fraud Rate — 3.4%
-
-Fraud Amount — ₹15.55M
-
-Average Risk Score — 50.38
-
-Failed Transactions — 35.2K
-
-Failure Rate — 7%
-
-Analysis includes:
-
-Fraud trend over time
-
-High-risk transactions by payment mode
-
-Failure reasons
-
-Fraud exposure by bank
-
-Fraud exposure by merchant
-
-Risk and suspected fraud by hour
-
-Note: Is_Suspected_Fraud = Yes represents suspected fraud in the dataset. It is not treated as confirmed fraud.
-
-5. Geographic Analysis
-
-Examines transaction activity, value, failures, fraud, and risk across locations.
-
-Analysis includes:
-
-Top states by transaction volume
-
-Top states by transaction value
-
-State-wise successful transactions
-
-State-wise failed transactions
-
-States with highest fraud exposure
-
-States with highest risk exposure
-
-Top cities by transaction value
-
-Top cities by suspected fraud
-
-Fraud rate by state
-
-6. Quick Insights
-
-The final page converts the dashboard analysis into business-oriented findings.
-
-It summarizes:
-
-Transaction concentration
-
-Fraud exposure
-
-High-risk transactions versus suspected fraud
-
-Operational failure issues
-
-Top merchants
-
-Peak transaction and risk periods
-
-Payment mode risk
-
-State-level transaction volume
-
-State-level risk exposure
-
-City-level suspected fraud
-
-Major failure reasons
-
-The analysis follows:
-
-KPIs → Trends → Insights → Business Outcomes → Recommendations
-
-Key Business Findings
-
-Based on the dashboard analysis:
-
-The dataset contains approximately 502.9K transactions with a total transaction value of approximately ₹442.48M.
-
-The overall transaction success rate is 91%, while the failure rate is 7%.
-
-The suspected fraud rate is 3.4%, representing approximately 17.1K suspected fraud transactions.
-
-The 25–34 age group has the highest customer concentration.
-
-Maharashtra is among the leading states for both transaction volume and transaction value.
-
-A relatively small group of merchants contributes significantly to successful transaction value.
-
-UPI ID and QR Scan together account for a large share of high-risk transactions.
-
-Insufficient balance and bank-related decline/rejection reasons are major contributors to failed transactions.
-
-Transaction activity is concentrated during the later part of the day, making peak periods relevant for transaction monitoring.
-
-These findings should be interpreted in the context of the available dataset and filters.
-
-Data Model
-
-The Power BI model follows a fact-and-dimension structure.
-
-Fact Table
-
-data
-
-The transaction table contains transaction-level information such as:
-
-Transaction ID
-
-Customer ID
-
-Transaction date and time
-
-Amount
-
-Cashback
-
-Bank
-
-Merchant
-
-Merchant category
-
-Payment mode
-
-UPI application
-
-State and city
-
-Transaction status
-
-Risk score
-
-Suspected fraud indicator
-
-Failure reason
-
-Dimension Tables
-
-The model includes dimensions for:
-
-Customer
-
-Merchant
-
-Bank
-
-UPI
-
-Location
-
-Date
-
-These dimensions are connected to the transaction fact table to support filtering and analysis.
-
-Main Measures
-
-The project uses DAX measures for the main KPIs and analytical calculations, including:
-
-Total Transactions
-
-Total Transaction Amount
-
-Successful Transactions
-
-Success Rate %
-
-Failed Transactions
-
-Failure Rate %
-
-Total Cashback
-
-Unique Customers
-
-Average Transaction Amount
-
-Average Spend by Customer
-
-Transactions per Customer
-
-Suspected Fraud Transactions
-
-Fraud %
-
-Fraud Amount
-
-Average Risk Score
-
-High-Risk Transactions
-
-Bank Success Rate
-
-Merchant Success Rate
-
-Tools Used
-
-Power BI — data modelling, DAX, visualizations, dashboard development and analysis
-
-Power Query — data preparation and transformation
-
-Excel / CSV — source data and initial data inspection
-
-Analytical Approach
-
-The project separates transaction volume from transaction value.
-
-Transaction volume = number of transactions
-
-Transaction value = total monetary value of transactions
-
-This distinction is important when interpreting states, banks, merchants, and customer activity.
-
-Similarly, suspected fraud is not treated as confirmed fraud.
-
-For example, a state with a high number of suspected fraud transactions is not automatically considered the highest-risk state. Fraud rate, transaction volume, transaction value, and risk indicators need to be considered together.
-
-Business Outcome
-
-The dashboard provides a consolidated view of UPI activity and helps identify:
-
-Major transaction markets
-
-Customer segments
-
-High-value merchants and banks
-
-Operational failure areas
-
-Fraud exposure
-
-High-risk payment modes
-
-Geographic risk concentration
-
-Peak transaction periods
-
-The purpose is to support decisions around transaction monitoring, operational improvement, and risk management rather than simply presenting charts.
-
-Project Structure
-
+```
 UPI-Transaction-Analysis/
 │
-├── README.md
-│
-├── data/
-│   └── raw_dataset.csv
-│
-├── powerbi/
-│   └── UPI_Analysis.pbix
-│
+├── UPI_Analysis.pbix          # Power BI report file
+├── README.md                  # This file
 └── screenshots/
-    ├── executive-summary.png
-    ├── customer-analytics.png
-    ├── merchant-bank-analytics.png
-    ├── fraud-risk.png
-    ├── geographic-analysis.png
-    └── quick-insights.png
+    ├── Executive_Report.png
+    ├── Customer_Report.png
+    ├── Merchant_and_Bank_Report.png
+    ├── Fraud_and_Risk_Report.png
+    ├── Geographic_Report.png
+    └── Quick_Report.png
+```
 
-Dashboard Preview
+---
 
-Executive Summary
+## 🔭 Future Enhancements
 
+- Add **Device_OS** (Android vs iOS) behavioral breakdown
+- Break out **Transaction_Type** (P2P / P2M / Bill Payment / Recharge) as its own dimension view
+- Add **Transaction_Fee_INR** as a margin/financial KPI alongside cashback
+- Migrate the MySQL layer to a live/scheduled connection for near-real-time refresh
 
+---
 
-Customer Analytics
+## 🙋 Author
 
+**Lokeshwar Siddartha**
+Programmer Analyst | BI & Data Analytics
+📍 Andhra Pradesh, India
 
-
-Merchant & Bank Analytics
-
-
-
-Fraud & Risk
-
-
-
-Geographic Analysis
-
-
-
-Quick Insights
-
-
-
-Project Status
-
-Completed
-
-The Power BI report covers the main transaction, customer, merchant, bank, geographic, fraud, risk, and time-based analysis required for this case study.
+*Feedback and suggestions are welcome — feel free to open an issue or connect.*
